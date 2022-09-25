@@ -1,3 +1,6 @@
+from typing import List
+from unicodedata import numeric
+
 matrix = [[" ", " ", " "],[" ", " ", " "],[" ", " ", " "]]
 
 def ShowMatrix(matrix):
@@ -16,13 +19,32 @@ def ShowMatrix(matrix):
 
     print("~-"*10)
 
-def Add(item, p1 , p2):
-    while matrix[p1][p2] != " ":
-        print("Essa Pocição já contem um valor, Por favor digite de novo.")
-        p1 = int(input("linha: ")) - 1
-        p2 = int(input("Coluna: ")) - 1
+def GetLineAndColumn() -> List:
+        p1 = str(input("linha: "))
+        p2 = str(input("Coluna: "))
+        while(p1.isnumeric() == False and p2.isnumeric() == False):
+            print("Um dos valores informados não é um um número. Por favor digite novamente.\n")
+            p1 = str(input("linha: "))
+            p2 = str(input("Coluna: ")) 
+    
+        return [int(numeric(p1)-1), int(numeric(p2)-1)]
 
-    matrix[p1][p2] = item
+def VerifyMatrixIndex(result) -> List:
+    while(0>result[0] or result[0]>2 and 0>result[1] or result[1]>2):
+        print("Um dos valores informados está fora dos limites do jogo. Por favor digite novamente.\n")
+        result = GetLineAndColumn()
+    
+    return result
+
+
+def Add(item, result=[]):
+    result = VerifyMatrixIndex(result)
+    while matrix[result[0]][result[1]] != " ":
+        print("Essa Pocição já contem um valor. Por favor digite de novo.")
+        result = VerifyMatrixIndex(GetLineAndColumn())
+
+
+    matrix[result[0]][result[1]] = item
 
 def Verify(item) -> int:
 
@@ -75,20 +97,22 @@ def ShowWinner(num):
 def Game():
     quant = 0
     count = 1
+    result = []
     while quant != 9:
         ShowMatrix(matrix = matrix)
-        p1 = int(input("linha: ")) - 1
-        p2 = int(input("Coluna: ")) - 1
+        result = GetLineAndColumn()
+        p1 = result[0]
+        p2 = result[1]
 
         if count%2 == 1:
-            Add(item= "O", p1=p1, p2=p2)
+            Add(item= "O", result=[p1, p2])
             count +=1
             isWinner = Verify(item= "O")
             if isWinner == 1:
                 ShowWinner(1)
                 break
         else:
-            Add(item= "X", p1=p1, p2=p2)
+            Add(item= "X", result=[p1, p2])
             count +=1
             isWinner = Verify(item="X")
             if isWinner == 1:
@@ -96,5 +120,8 @@ def Game():
                 break
             
         quant += 1
+    if (quant == 9):
+        ShowMatrix(matrix)
+        print("Deu velha kkkkkkk")
 
 Game()
