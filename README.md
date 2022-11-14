@@ -1,2 +1,2 @@
-# JogoDaVelha.py
- Jogo da velha feito em python38.
+# Jogo da velha.
+ Jogo da velha feito em python38 e agora também em kotlin
